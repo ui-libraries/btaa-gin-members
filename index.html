@@ -59,6 +59,17 @@
         validUniStates = uniStates.features.map(d=>turf.rewind(d,{reverse:true}));
         validLakes = naLakes.features.map(d=>turf.rewind(d,{reverse:true}));
         validOcean = ocean.features.map(d=>turf.rewind(d,{reverse:true}));
+            
+        // Append a new SVG path element for each state
+        svg.selectAll(".uni-state-path")
+            .data(validUniStates)
+            .enter().append("path")
+            .attr("fill", "#0088CE")
+            .attr("fill-opacity", 0.90)
+            .attr("stroke", "black")
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-width", 0.0)
+            .attr("d", path);
 
         // Append a new SVG path element for each state
         svg.selectAll(".state-path")
@@ -70,17 +81,6 @@
             .attr("stroke-linejoin", "round")
             .attr("stroke-width", 0.75)
             .attr("d", path); 
-            
-        // Append a new SVG path element for each state
-        svg.selectAll(".uni-state-path")
-            .data(validUniStates)
-            .enter().append("path")
-            .attr("fill", "green")
-            .attr("fill-opacity", 0.20)
-            .attr("stroke", "gray")
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-width", 0.0)
-            .attr("d", path);
 
         // Append a new SVG path element for each state
         svg.selectAll(".na-lakes-path")
@@ -121,10 +121,10 @@
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
             .attr("r", 12)
-            .attr("stroke", "gray")
+            .attr("stroke", "#163b58")
             .attr("stroke-width", 0.5)
-            .attr("fill-opacity", 0.15)
-            .attr("fill", "gray") // Change the fill color as needed
+            .attr("fill-opacity", 0.75)
+            .attr("fill", "white") // Change the fill color as needed
             // Define hover effects for circles
             .on("mouseover", function() { 
                 d3.select(this)
@@ -133,7 +133,7 @@
             })
             .on("mouseout", function() { 
                 d3.select(this)
-                    .attr("stroke", "gray") // Change stroke back to gray
+                    .attr("stroke", "#163b58") // Change stroke back to gray
                     .attr("stroke-width", 0.5); // Change stroke back to 0.5
             })
             // For each state...
