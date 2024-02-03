@@ -9,7 +9,26 @@
         body, html {
             margin: 0;
             overflow: hidden;
-        }       
+        }
+
+        .zoom-buttons {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+        }
+
+        .zoom-button {
+            cursor: pointer;
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: center;
+        }  
     </style>
 </head>
 <body>
@@ -107,7 +126,29 @@
         
         // Run the simulation for a few ticks to resolve collisions and finalize positions
         for (let i = 0; i < 300; ++i) simulation.tick();
-        
+
+/* TESTING */
+        // Add zoom functionality to the group
+        const zoom = d3.zoom()
+            .scaleExtent([0, 8]) // Set the zoom scale limits
+            .on("zoom", zoomed);
+
+        svg.call(zoom);      
+
+        function zoomed(event) {
+            svgGroup.attr("transform", event.transform);
+        }
+
+        // Get the bounding box of the circles
+        const circleBounds = getBoundingBox(unis.features.map(d => [d.x, d.y]));
+
+        // Calculate the initial scale based on the bounding box of the circles
+        const initialScale = Math.min(width / (circleBounds[1][0] - circleBounds[0][0]), height / (circleBounds[1][1] - circleBounds[0][1])) * 0.9;
+
+        // Set the initial zoom level
+        svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(initialScale).translate(-width / 2, -height / 2));        
+/* TESTING */   
+
         // Bind data and create circle elements
         svgGroup.selectAll("circle")
             .data(unis.features)
@@ -152,19 +193,23 @@
             .style("fill", "black") // Change the text color as needed
             .style("pointer-events", "none"); // Prevent the text from triggering pointer events   
 
-        // Add zoom functionality to the group
-        const zoom = d3.zoom()
-            .scaleExtent([1, 8]) // Set the zoom scale limits
-            .on("zoom", zoomed);
-
-        svg.call(zoom);
-
-        function zoomed(event) {
-            svgGroup.attr("transform", event.transform);
-        }
-
         // Append the SVG to the body
-        document.body.appendChild(svg.node()); 
+        document.body.appendChild(svg.node());
+
+/* TESTING */
+        // Function to get the bounding box of an array of points
+        function getBoundingBox(points) {
+            const bounds = [[Infinity, Infinity], [-Infinity, -Infinity]];
+            points.forEach(([x, y]) => {
+                bounds[0][0] = Math.min(bounds[0][0], x);
+                bounds[0][1] = Math.min(bounds[0][1], y);
+                bounds[1][0] = Math.max(bounds[1][0], x);
+                bounds[1][1] = Math.max(bounds[1][1], y);
+            });
+            return bounds;
+        }
+/* TESTING */
+
     });
 </script>
 
