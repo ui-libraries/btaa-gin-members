@@ -136,13 +136,7 @@
         svg.call(zoom);      
 
         function zoomed(event) {
-            // Prevent panning past the circle bounds
-            const currentTransform = event.transform;
-            const [x, y] = projection.invert([currentTransform.x, currentTransform.y]);
-            const newX = Math.min(circleBounds[1][0], Math.max(circleBounds[0][0], x));
-            const newY = Math.min(circleBounds[1][1], Math.max(circleBounds[0][1], y));
-
-            svgGroup.attr("transform", d3.zoomIdentity.translate(projection(newX, newY)[0], projection(newX, newY)[1]).scale(currentTransform.k));
+            svgGroup.attr("transform", event.transform);
         }
 
         // Get the bounding box of the circles
@@ -214,6 +208,12 @@
             });
             return bounds;
         }
+
+        // Prevent the default behavior of mouse and touch events
+        svg.on("mousedown.zoom", null);
+        svg.on("wheel.zoom", null);
+        svg.on("touchstart.zoom", null);
+        svg.on("touchmove.zoom", null);
 /* TESTING */
 
     });
